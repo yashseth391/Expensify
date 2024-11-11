@@ -1,8 +1,20 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Colors from "../../utils/Colors";
+import { client } from "../../utils/KindeConfig";
+import services from "../../utils/services";
+import { useRouter } from "expo-router";
 
 const Home = () => {
+  const handleSignIn = async () => {
+    const token = await client.login();
+    if (token) {
+      // User was authenticated
+      await services.storeData("login", "true");
+      router.replace("/");
+    }
+  };
+  const router = useRouter();
   return (
     <View style={{ display: "flex", alignItems: "center" }}>
       <Image source={require("../../assets/loginBg.png")} style={styles.Bg} />
@@ -11,7 +23,7 @@ const Home = () => {
         <Text style={styles.subContentText}>
           Stay on Track ,Event by Event :Your Personal Budget Plan
         </Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleSignIn}>
           <Text style={styles.buttonText}> Login/SignUp</Text>
         </TouchableOpacity>
         <Text style={styles.condition}>
