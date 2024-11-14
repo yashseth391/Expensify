@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import services from "../../utils/services";
 import { useRouter } from "expo-router";
 import { client } from "../../utils/KindeConfig";
+import { supabase } from "../../utils/SupabaseConfig";
 
 const index = () => {
   const router = useRouter();
@@ -25,8 +26,16 @@ const index = () => {
 
   useEffect(() => {
     checkUserAuth();
+    getCategoryList();
   }, []);
-
+  const getCategoryList = async () => {
+    const user = await client.getUserDetails();
+    let { data, error } = await supabase
+      .from("Category")
+      .select("*")
+      .eq("created_by", user.email);
+    console.log(data);
+  };
   return (
     <View style={{ marginTop: 20 }}>
       <Text>index</Text>
