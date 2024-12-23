@@ -3,4 +3,5 @@ export default {
   PRIMARY: "#8B42FC",
   WHITE: "#FFF",
   PINK: "#FFC0CB",
+  GRAY: "grey",
 };
