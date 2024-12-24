@@ -56,7 +56,7 @@ const index = () => {
         <CircularChart />
       </View>
       <View style={styles.plusButton}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/AddNewCategory")}>
           <AntDesign name="pluscircle" size={hp("8%")} color={Colors.PRIMARY} />
         </TouchableOpacity>
       </View>
