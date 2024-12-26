@@ -18,6 +18,14 @@ const HomeLayout = () => {
           headerTitle: "Add New Category",
         }}
       />
+      <Stack.Screen
+        name="AddNewCategoryItem"
+        options={{
+          presentation: "modal",
+          headerShown: true,
+          headerTitle: "Add New  Item",
+        }}
+      />
     </Stack>
   );
 };

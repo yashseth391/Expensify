@@ -5,8 +5,10 @@ import {
   Touchable,
   TouchableOpacity,
   View,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import services from "../../utils/services";
 import { useRouter } from "expo-router";
 import { client } from "../../utils/KindeConfig";
@@ -18,8 +20,11 @@ import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import CircularChart from "../../components/CircularChart";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import CategoryList from "../../components/CategoryList";
 const index = () => {
   const router = useRouter();
+  const [categoryList, setCategoryList] = useState();
+  const [loading, setLoading] = useState(false);
   const handleLogout = async () => {
     const loggedOut = await client.logout();
 
@@ -42,22 +47,44 @@ const index = () => {
     getCategoryList();
   }, []);
   const getCategoryList = async () => {
+    setLoading(true);
     const user = await client.getUserDetails();
     let { data, error } = await supabase
       .from("Category")
-      .select("*")
-      .eq("created_by", user.email);
+      .select("*,CategoryItems(*)")
+      .eq("created_by", user.id);
+    setCategoryList(data);
     console.log("user data", data);
+    data && setLoading(false);
   };
+
   return (
-    <View>
-      <View style={styles.container}>
-        <Headers />
-        <CircularChart />
-      </View>
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={() => getCategoryList()}
+          />
+        }
+      >
+        <View style={styles.container}>
+          <Headers />
+        </View>
+        <View
+          style={{
+            marginTop: -hp("8%"),
+            marginRight: wp("5%"),
+            marginLeft: wp("5%"),
+          }}
+        >
+          <CircularChart />
+          <CategoryList categoryList={categoryList} />
+        </View>
+      </ScrollView>
       <View style={styles.plusButton}>
         <TouchableOpacity onPress={() => router.push("/AddNewCategory")}>
-          <AntDesign name="pluscircle" size={hp("8%")} color={Colors.PRIMARY} />
+          <AntDesign name="pluscircle" size={hp("6%")} color={Colors.PRIMARY} />
         </TouchableOpacity>
       </View>
     </View>
@@ -75,7 +102,7 @@ const styles = StyleSheet.create({
   },
   plusButton: {
     position: "absolute",
-    top: hp("85%"),
+    top: hp("89.9%"),
     right: wp("5%"),
   },
 });
